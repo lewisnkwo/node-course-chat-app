@@ -3,40 +3,40 @@ var socket = io();
 //ON
 socket.on('connect', function () {
   console.log('Connected to server');
-
-  socket.on('adminMessage', function (adminMessage) {
-    console.log(adminMessage);
-    var li = jQuery('<li></li>');
-    li.text(`${adminMessage.from}: ${adminMessage.text}`);
-    jQuery('#messages').append(li);
-  });
-
-  socket.on('newUserMessage', function (newUserMessage) {
-    console.log(newUserMessage);
-    var li = jQuery('<li></li>');
-    li.text(`${newUserMessage.from}: ${newUserMessage.text}`);
-    jQuery('#messages').append(li);
-  });
-
 });
 
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
 });
 
+socket.on('adminMessage', function (adminMessage) {
+  var formattedTime = moment(adminMessage.createdAt).format('h:mm a');
+  var li = jQuery('<li></li>');
+  li.text(`${adminMessage.from} ${formattedTime}: ${adminMessage.text}`);
+  jQuery('#messages').append(li);
+});
+
+socket.on('newUserMessage', function (newUserMessage) {
+  var formattedTime = moment(newUserMessage.createdAt).format('h:mm a');
+  var li = jQuery('<li></li>');
+  li.text(`${newUserMessage.from} ${formattedTime}: ${newUserMessage.text}`);
+  jQuery('#messages').append(li);
+});
+
 socket.on('newMessage', function (message) {
-  console.log('newMessage:', message);
+  var formattedTime = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li></li>');
 
-  li.text(`${message.from}: ${message.text}`);
+  li.text(`${message.from} ${formattedTime}: ${message.text}`);
   jQuery('#messages').append(li);
 });
 
 socket.on('newLocationMessage', function (message) {
+  var formattedTime = moment(message.createdAt).format('h:mm a');
   var li = jQuery('<li></li>');
   var a = jQuery('<a target="_blank">My current location</a>');
 
-  li.text(`${message.from}: `);
+  li.text(`${message.from} ${formattedTime}: `);
   a.attr('href', message.url);
   li.append(a);
   jQuery('#messages').append(li);
